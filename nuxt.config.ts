@@ -3,9 +3,18 @@ export default defineNuxtConfig({
   typescript: {
     shim: false
   },
+  nitro: {
+    preset: 'vercel-edge',
+  },
   modules: [
     'nuxt-icon',
-    '@pinia/nuxt'
+    [
+      '@pinia/nuxt',
+      {
+        autoImports: ['defineStore'],
+      }
+    ]
+
   ],
   css: ['~/assets/css/main.css'],
   postcss: {
@@ -13,5 +22,8 @@ export default defineNuxtConfig({
       tailwindcss: {},
       autoprefixer: {},
     },
+  },
+  alias: {
+    pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
   },
 })
