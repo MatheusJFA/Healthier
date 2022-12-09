@@ -1,0 +1,113 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("DATABASE_URL")
+}
+
+model User {
+  id              String         @id @default(uuid())
+  name            String
+  email           String         @unique
+  password        String
+  birthdate       DateTime
+  sex             Sex            @default(MALE)
+  image           String?
+  isEmailVerified Boolean        @default(false)
+  level           Int            @default(1)
+  exp             BigInt         @default(0)
+  height          Decimal
+  weight          Decimal
+  weightTracker   Decimal[]
+  intake          Intake[]
+  carbsIntake     CarbsIntake    @default(MODERATE_CARB)
+  dietType        DietType       @default(NO_DIET)
+  diet            Diet           @default(MAINTENANCE)
+  intolerances    Intolerances[]
+  createdAt       DateTime       @default(now())
+  deletedAt       DateTime?
+  updatedAt       DateTime?
+  tokens          Token[]
+
+  @@map("users")
+}
+
+model Intake {
+  id        String    @id @default(uuid())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String    @unique
+  proteins  Int
+  fats      Int
+  carbs     Int
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime?
+
+  @@map("intakes")
+}
+
+model Token {
+  id        String    @id @default(uuid())
+  jwt       String
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  expires   BigInt
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime?
+
+  @@map("tokens")
+}
+
+enum Sex {
+  MALE
+  FEMALE
+}
+
+enum CarbsIntake {
+  LOW_CARB
+  MODERATE_CARB
+  HIGH_CARB
+}
+
+enum Diet {
+  MAINTENANCE
+  CUTTING
+  BULKING
+}
+
+enum DietType {
+  NO_DIET
+  PESCETARIAN
+  LACTO_VEGETARIAN
+  OVO_VEGETARIAN
+  VEGAN
+  PALEO
+  PRIMAL
+  VEGETARIAN
+  KETOGENIC
+  WHOLE_30
+}
+
+enum Intolerances {
+  NONE
+  DAIRY
+  EGG
+  GLUTEN
+  PEANUT
+  SESAME
+  SEAFOOD
+  SHELLFISH
+  SOY
+  SULFITE
+  TREE_NUT
+  WHEAT
+  GRAINS
+  CORN
+}
